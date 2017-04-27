@@ -1,40 +1,48 @@
 import React, { Component } from 'react';
 import './App.css';
 import { ChromePicker } from 'react-color';
+import Slider from './components/Slider';
+import ReactDOM from 'react-dom';
 
 class GradientTool extends Component {
   state = {
-    colorFirst: '#ff005c',
-    colorSecond: 'red'
+    firstColor: '#ff005c',
+    secondColor: 'red',
+    gradientAngle: 45
   };
-  handleChangeCompleteForFirst = (color) => {
-    this.setState({ colorFirst: color.hex});
+  handleChangeForFirstColor = (color) => {
+    this.setState({ firstColor: color.hex });
   };
-  handleChangeCompleteForSecond = (color) => {
-    this.setState({ colorSecond: color.hex});
+  handleChangeForSecondColor = (color) => {
+    this.setState({ secondColor: color.hex });
   };
+  handleChangeForGradientAngle(e) {
+    this.setState({ gradientAngle: ReactDOM.findDOMNode(this.refs.gradientSlider.refs.inp).value })
+  }
 
   render() {
-    let colorFirst = this.state.colorFirst;
-    let colorSecond = this.state.colorSecond;
-    let gradientText = 'background: linear-gradient(45deg, ' + this.state.colorFirst + ', ' + this.state.colorSecond + ');';
-    let gradientFallBackText = 'background: ' + colorFirst + ';';
-    let gradientWebKitText = 'background: -webkit-linear-gradient(45deg, ' + this.state.colorFirst + ', ' + this.state.colorSecond + ');';
+    let firstColor = this.state.firstColor;
+    let secondColor = this.state.secondColor;
+    let gradientAngle = this.state.gradientAngle;
+    let gradientText = 'background: linear-gradient(' + gradientAngle + 'deg, ' + this.state.firstColor + ', ' + this.state.secondColor + ');';
+    let gradientFallBackText = 'background: ' + firstColor + ';';
+    let gradientWebKitText = 'background: -webkit-linear-gradient(' + gradientAngle + 'deg, ' + this.state.firstColor + ', ' + this.state.secondColor + ');';
     return (
-      <div className="colorPickerContainer" style={{background: 'linear-gradient(45deg,' + colorFirst + ',' + colorSecond + ')' }}>
+      <div className="colorPickerContainer" style={{ background: 'linear-gradient(' + gradientAngle + 'deg,' + firstColor + ',' + secondColor + ')' }}>
         <ChromePicker
-        color={ this.state.colorFirst }
-        onChange={ this.handleChangeCompleteForFirst }
-      />
-      <ChromePicker
-        color={ this.state.colorSecond }
-        onChange={ this.handleChangeCompleteForSecond }
-      />
-      <div className="gradientCodeContainer">
-        <h1>{gradientFallBackText}</h1>
-        <h1>{gradientText}</h1>
-        <h1>{gradientWebKitText}</h1>      
-      </div>
+          color={this.state.firstColor}
+          onChange={this.handleChangeForFirstColor}
+        />
+        <ChromePicker
+          color={this.state.secondColor}
+          onChange={this.handleChangeForSecondColor}
+        />
+        <Slider update={this.handleChangeForGradientAngle.bind(this)} ref="gradientSlider" />
+        <div className="gradientCodeContainer">
+          <h1>{gradientFallBackText}</h1>
+          <h1>{gradientText}</h1>
+          <h1>{gradientWebKitText}</h1>
+        </div>
       </div>
     );
   }
